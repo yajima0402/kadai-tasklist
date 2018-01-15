@@ -18,8 +18,7 @@ class TasksController extends Controller
      */
     public function index()
     {
-        $tasks = Task::User();
-   //     $tasks = Task::all();
+        $tasks = Task::all();
 
         if (\Auth::check()) {
         if (\Auth::user()->id != $task->user_id) {
@@ -39,7 +38,7 @@ class TasksController extends Controller
     public function create()
     {
         $task = \Auth::User();
-      //  $task = new Task;
+  
         return view('tasks.create', [
             'task' => $task,
         ]);
@@ -53,17 +52,25 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'status' => 'required|max:10',
-            'content' => 'required|max:255',
+          $this->validate($request, [
+              'status' => 'required|max:10',
+              'content' => 'required|max:255',
           ]);
-        $request->user()->tasks()->create(
-            [
-                'status' => $request->status,
-                'content' => $request->content,
-           ]
-        );
-        return redirect('/');
+
+//        $request->user()->tasks()->create(
+//            [
+//                'status' => $request->status,
+//                'content' => $request->content,
+//            ]
+//        );
+
+
+          $task = new Task;
+          $task->status = $request->status;
+          $task->content = $request->content;
+          $task->user_id = $request->user()->id;
+          $task->save();
+          return redirect('/');
     }
 
     /**
@@ -126,7 +133,6 @@ class TasksController extends Controller
     {
         $this->validate($request,[
             'status' => 'required|max:10',
-            'content' => 'required|max:255', 
     ]);
 
         $task = Task::find($id);
